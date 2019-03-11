@@ -1,0 +1,5 @@
+DROP DATABASE IF EXISTS news;
+CREATE DATABASE news;
+
+
+

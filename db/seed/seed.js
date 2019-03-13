@@ -1,4 +1,8 @@
-const { userData, topicData } = require('../data/development-data');
+const {
+  userData, topicData, articleData, commentData,
+} = require('../data/development-data');
+
+const { formattingArticleDateTimeStamp, formattingComments, createRef } = require('../utils');
 
 exports.seed = function (knex, Promise) {
   return knex.migrate
@@ -9,5 +13,16 @@ exports.seed = function (knex, Promise) {
       .returning('*'))
     .then(() => knex('users')
       .insert(userData)
-      .returning('*'));
+      .returning('*'))
+    .then(() => knex('article')
+      .insert(formattingArticleDateTimeStamp(articleData))
+      .returning('*'))
+    .then(((articleRows) => {
+      const articleRef = createRef(articleRows, 'article_id');
+      const formattedComment = formattingComments(commentData, articleRef);
+      const commentInsertions = knex('comment')
+        .insert(formattedComment)
+        .returning('*');
+      return Promise.all([articleRows, commentInsertions]);
+    }));
 };

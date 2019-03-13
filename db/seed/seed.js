@@ -1,6 +1,6 @@
 const {
   userData, topicData, articleData, commentData,
-} = require('../data/development-data');
+} = require('../data');
 
 const { formattingArticleDateTimeStamp, formattingComments, createRef } = require('../utils');
 

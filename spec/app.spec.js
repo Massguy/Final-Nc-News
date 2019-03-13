@@ -23,6 +23,7 @@ const request = supertest(app);
 //     });
 //   });
 // });
+
 describe('/api', () => {
   beforeEach(() => connection.seed.run());
 
@@ -53,8 +54,8 @@ describe('/api', () => {
       .get('/api/articles')
       .expect(200)
       .then((res) => {
-        expect(res.body.article).to.be.an('array');
-        expect(res.body.article[0]).to.contain.keys(
+        expect(res.body.articles).to.be.an('array');
+        expect(res.body.articles[0]).to.contain.keys(
           'author',
           'title',
           'article_id',
@@ -63,6 +64,30 @@ describe('/api', () => {
           'votes',
           'comment_count',
         );
+      }));
+    it('accepts author query', () => request
+      .get('/api/articles?author=butter_bridge')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].author).to.equal('butter_bridge');
+      }));
+    it('accepts topic query', () => request
+      .get('/api/articles?topic=mitch')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].topic).to.equal('mitch');
+      }));
+    it('accepts sort_by query', () => request
+      .get('/api/articles?sort_by=article_id')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[1].article_id).to.equal(11);
+      }));
+    it('accepts order query', () => request
+      .get('/api/articles?article_id/order=desc')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.articles[0].article_id).to.equal(12);
       }));
   });
 });

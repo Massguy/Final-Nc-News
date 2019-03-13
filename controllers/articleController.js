@@ -1,7 +1,19 @@
 const { getArticles } = require('../model/articleModel');
 
 exports.fetchArticles = (req, res, next) => {
-  getArticles().then((article) => {
-    res.status(200).send({ article });
-  });
+  const {
+    author, topic, sort_by, order,
+  } = req.query;
+  // eslint-disable-next-line no-nested-ternary
+  const whereConditions = author
+    ? { 'article.author': author }
+    : topic
+      ? { 'article.topic': topic }
+      : {};
+  Promise.all([
+    getArticles(whereConditions, sort_by, order),
+  ])
+    .then(([articles]) => {
+      res.status(200).send({ articles });
+    });
 };

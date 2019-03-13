@@ -1,19 +1,17 @@
 const connection = require('../db/connection');
 
-exports.getArticles = () => connection
+exports.getArticles = (whereConditions, sort_by = 'article_id', order = 'desc') => connection
   .select(
-    'article.author',
+    'article.article_id',
+    'article.created_at',
     'article.title',
-    'article.article_id',
     'article.topic',
-    'article.created_at',
     'article.votes',
+    'article.author',
   )
+  .count('comment.article_id as comment_count')
   .from('article')
-  .groupBy('article.author', 'article.title',
-    'article.article_id',
-    'article.topic',
-    'article.created_at',
-    'article.votes')
-  .leftJoin('comment', 'article.article_id', 'comment.comment_id')
-  .count('comment.comment_id as comment_count');
+  .where(whereConditions)
+  .leftJoin('comment', 'article.article_id', '=', 'comment.article_id')
+  .groupBy('article.article_id')
+  .orderBy(sort_by || 'article.created_at', order || 'desc');

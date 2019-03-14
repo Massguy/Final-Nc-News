@@ -1,4 +1,6 @@
-const { getArticles, sendArticles, getArticleById } = require('../model/articleModel');
+const {
+  getArticles, sendArticles, getArticleById, updateVote,
+} = require('../model/articleModel');
 
 exports.fetchArticles = (req, res, next) => {
   const {
@@ -36,6 +38,16 @@ exports.fetchArticleById = (req, res, next) => {
   // eslint-disable-next-line consistent-return
   getArticleById(article_id).then(([article]) => {
     if (article) res.send({ article });
+    else return Promise.reject({ status: 404, msg: 'server error' });
+  });
+};
+
+exports.updateById = (req, res, next) => {
+  const { article_id } = req.params;
+  const { inc_votes } = req.body;
+  // eslint-disable-next-line consistent-return
+  updateVote(article_id, inc_votes).then(([article]) => {
+    if (article) res.status(202).send({ article });
     else return Promise.reject({ status: 404, msg: 'server error' });
   });
 };

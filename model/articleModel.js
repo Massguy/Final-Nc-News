@@ -22,3 +22,8 @@ exports.sendArticles = formattedArticle => connection('article').insert(formatte
 exports.getArticleById = article_id => connection.select('*')
   .from('article')
   .where({ article_id });
+
+exports.updateVote = (article_id, inc_votes) => connection.from('article')
+  .increment('votes', inc_votes)
+  .where({ 'article.article_id': article_id })
+  .returning('*');

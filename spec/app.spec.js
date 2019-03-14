@@ -125,6 +125,22 @@ describe('/api', () => {
             created_at: '1978-11-25T12:21:54.171Z',
           });
         }));
+      it('PATCH status 202 responds with article vote updated and incremented by 1', () => request
+        .patch('/api/articles/11')
+        .send({ inc_votes: 1 })
+        .expect(202)
+        .then((res) => {
+          expect(res.body.article).to.eql({
+            article_id: 11,
+            title: 'Am I a cat?',
+            body:
+              'Having run out of ideas for articles, I am staring at the wall blankly, like a cat. Does this make me a cat?',
+            votes: 1,
+            topic: 'mitch',
+            author: 'icellusedkars',
+            created_at: '1978-11-25T12:21:54.171Z',
+          });
+        }));
     });
   });
 });

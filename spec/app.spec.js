@@ -76,6 +76,7 @@ describe('/api', () => {
       .expect(200)
       .then((res) => {
         expect(res.body.articles[0].topic).to.equal('mitch');
+        expect(res.body.articles).to.have.lengthOf(11);
       }));
     it('accepts sort_by query', () => request
       .get('/api/articles?sort_by=article_id')
@@ -89,5 +90,51 @@ describe('/api', () => {
       .then((res) => {
         expect(res.body.articles[0].article_id).to.equal(12);
       }));
+    it('POST status: 201 accepts an object containing title,body,topic and username properties', () => request.post('/api/articles')
+      .send({
+        title: 'Living in the shadow of a great man',
+        topic: 'mitch',
+        author: 'butter_bridge',
+        body: 'I find this existence challenging',
+      })
+      .expect(201)
+      .then((res) => {
+        expect(res.body.article).to.contain.keys(
+          {
+            title: 'Living in the shadow of a great man',
+            topic: 'mitch',
+            author: 'butter_bridge',
+            body: 'I find this existence challenging',
+          },
+        );
+      }));
+    describe('/:article_id', () => {
+      it('GET status:200 responds with an array of article objects with author,username,title,body,article_id,topic,created_at,votes,comment_count properties', () => request
+        .get('/api/articles/11')
+        .expect(200)
+        .then((res) => {
+          expect(res.body.article).to.be.an('object');
+          expect(res.body.article).to.eql({
+            article_id: 11,
+            title: 'Am I a cat?',
+            body:
+              'Having run out of ideas for articles, I am staring at the wall blankly, like a cat. Does this make me a cat?',
+            votes: 0,
+            topic: 'mitch',
+            author: 'icellusedkars',
+            created_at: '1978-11-25T12:21:54.171Z',
+          });
+        }));
+    });
   });
 });
+
+//   it('delete', () => {
+//     return request
+//       .delete('/api/articles/11')
+//       .expect(204)
+//       .then((res) => {
+//         return request.get('/api/articles/11').expect(404);
+//       }
+// });
+// });

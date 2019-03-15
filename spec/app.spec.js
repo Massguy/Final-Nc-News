@@ -226,5 +226,14 @@ describe('/api', () => {
           'avatar_url',
         );
       }));
+    it('POST status:201 accepts an object containing username,avatar_url and name properties', () => request.post('/api/users')
+      .send({ name: '100 pushups,100 situps,10km run', username: 'saitama', avatar_url: 'onepunch' })
+      .expect(201)
+      .then((res) => {
+        expect(res.body).to.eql({
+          users:
+            { name: '100 pushups,100 situps,10km run', username: 'saitama', avatar_url: 'onepunch' },
+        });
+      }));
   });
 });

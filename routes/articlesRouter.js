@@ -1,6 +1,8 @@
 const articlesRouter = require('express').Router();
 const {
-  fetchArticles, sendingArticles, fetchArticleById, updateById, deleteById, getCommentById, sendComments,
+  fetchArticles, sendingArticles,
+  fetchArticleById, updateById,
+  deleteById, getCommentById, sendComments,
 } = require('../controllers/articleController');
 
 articlesRouter.route('/').get(fetchArticles);

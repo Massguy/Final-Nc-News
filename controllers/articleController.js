@@ -1,5 +1,5 @@
 const {
-  getArticles, sendArticles, getArticleById, updateVote, removeArticle, getComment, sendCom,
+  getArticles, sendArticles, getArticleById, updateVote, removeArticle, getComment, sendCom, changeComment,
 } = require('../model/articleModel');
 
 exports.fetchArticles = (req, res, next) => {

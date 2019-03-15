@@ -195,4 +195,21 @@ describe('/api', () => {
       });
     });
   });
+  describe('/comments', () => {
+    it('PATCH status 202 responds with comment vote updated and incremented by 1', () => request
+      .patch('/api/comments/1')
+      .send({ inc_votes: 1 })
+      .expect(202)
+      .then((res) => {
+        expect(res.body.comment).to.eql({
+          article_id: 9,
+          comment_id: 1,
+          body:
+            "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+          votes: 17,
+          author: 'butter_bridge',
+          created_at: '2017-11-22T12:36:03.389Z',
+        });
+      }));
+  });
 });

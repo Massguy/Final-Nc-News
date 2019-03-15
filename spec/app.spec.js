@@ -211,5 +211,8 @@ describe('/api', () => {
           created_at: '2017-11-22T12:36:03.389Z',
         });
       }));
+    it('DELETE the given comment by `comment_id`', () => request
+      .delete('/api/comments/1')
+      .expect(204));
   });
 });

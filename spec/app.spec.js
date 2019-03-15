@@ -215,4 +215,16 @@ describe('/api', () => {
       .delete('/api/comments/1')
       .expect(204));
   });
+  describe('/users', () => {
+    it('GET status:200 responds with an array of user objects with username,avatar_url and name properties', () => request
+      .get('/api/users')
+      .expect(200)
+      .then((res) => {
+        expect(res.body.users).to.be.an('array');
+        expect(res.body.users[0]).to.contain.keys(
+          'username',
+          'avatar_url',
+        );
+      }));
+  });
 });

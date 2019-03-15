@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 process.env.NODE_ENV = 'test';
 const supertest = require('supertest');
 const { expect } = require('chai');
@@ -141,16 +142,57 @@ describe('/api', () => {
             created_at: '1978-11-25T12:21:54.171Z',
           });
         }));
+      it('DELETE status 204 removes the article by its id', () => request
+        .delete('/api/articles/11')
+        .expect(204));
+      describe('/comments', () => {
+        it('GET status 200 an array of comments for the given `article_id` of which each comment will have comment_id,votes,created_at,author,body properties', () => request
+          .get('/api/articles/1/comments')
+          .expect(200)
+          .then((res) => {
+            expect(res.body.comments).to.be.an('array');
+            expect(res.body.comments[0]).to.contain.keys(
+              'comment_id',
+              'votes',
+              'created_at',
+              'author',
+              'body',
+            );
+          }));
+        // it('accepts sort_by query', () => request
+        //   .get('/api/articles/1?sort_by=article_id')
+        //   .expect(200)
+        //   .then((res) => {
+        //     expect(res.body.comments).to.equal(2);
+        //   }));
+        // it('accepts order query', () => request
+        //   .get('/api/articles/article_id?order=desc')
+        //   .expect(200)
+        //   .then((res) => {
+        //     expect(res.body.comments[0]).to.equal(12);
+        //   }));
+        // it('POST status: 201 accepts an object containing username and body properties', () => request.post('/api/articles/15/comments')
+        //   .send({ body: '100 pushups,100 situps,10km run', username: 'saitama' })
+        //   .expect(201)
+        //   .then((res) => {
+        //     expect(res.body.article).to.contain.keys(
+        //       { body: '100 pushups,100 situps,10km run', username: 'saitama' },
+        //     );
+        //   }));
+        it('POST status 201 an object with the username and body properties', () => request.post('/api/articles/20/comments')
+          .send({ body: '100 pushups,100 situps,10km run', username: 'icellusedkars' })
+          .expect(201)
+          .then((res) => {
+            expect(res.body.comment).to.contain.keys(
+              'body',
+              'author',
+              'article_id',
+              'created_at',
+              'comment_id',
+              'votes',
+            );
+          }));
+      });
     });
   });
 });
-
-//   it('delete', () => {
-//     return request
-//       .delete('/api/articles/11')
-//       .expect(204)
-//       .then((res) => {
-//         return request.get('/api/articles/11').expect(404);
-//       }
-// });
-// });

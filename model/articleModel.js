@@ -27,3 +27,18 @@ exports.updateVote = (article_id, inc_votes) => connection.from('article')
   .increment('votes', inc_votes)
   .where({ 'article.article_id': article_id })
   .returning('*');
+
+exports.removeArticle = article_id => connection.from('article')
+  .where({ 'article.article_id': article_id })
+  .del();
+
+exports.getComment = (article_id, sort_by = 'comment_id', order = 'desc') => connection.select('votes',
+  'comment_id',
+  'created_at',
+  'author',
+  'body')
+  .from('comment')
+  .where({ 'comment.article_id': article_id })
+  .orderBy(sort_by || 'article.created_at', order || 'desc');
+
+exports.sendCom = formattedComment => connection('comment').insert(formattedComment).returning('*');

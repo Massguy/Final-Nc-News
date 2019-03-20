@@ -5,12 +5,13 @@ const {
 
 exports.updateComment = (req, res, next) => {
   const { comment_id } = req.params;
-  const { inc_votes } = req.body;
-  // eslint-disable-next-line consistent-return
-  changeComment(comment_id, inc_votes).then(([comment]) => {
-    if (comment) res.status(202).send({ comment });
-    else return Promise.reject({ status: 404, msg: 'server error' });
-  })
+  let { inc_votes = 0 } = req.body;
+  if (typeof inc_votes !== 'number') inc_votes = 0;
+  changeComment(comment_id, inc_votes)
+    .then(([comment]) => {
+      if (!comment) res.status(404).send({ status: 404, msg: 'Route not found' });
+      else res.status(200).send({ comment });
+    })
     .catch(err => next(err));
 };
 
@@ -19,7 +20,7 @@ exports.removeComment = (req, res, next) => {
   // eslint-disable-next-line consistent-return
   deleteComment(comment_id).then((itemsRemoved) => {
     if (itemsRemoved) res.sendStatus(204);
-    else return Promise.reject({ status: 404, msg: 'server error' });
+    else return Promise.reject({ status: 404, msg: 'Route not found' });
   })
-    .catch(err => next(err));
+    .catch(next);
 };

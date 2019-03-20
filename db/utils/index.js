@@ -6,6 +6,7 @@ const formattingArticleDateTimeStamp = (unformattedArticles) => {
     topic: article.topic,
     author: article.author,
     created_at: new Date(article.created_at),
+    article_id: article.article_id,
   }));
   return timeStampArticles;
 };
@@ -28,6 +29,7 @@ const formattingComments = (unformattedComments, articleRef) => {
     votes: comment.votes || 0,
     created_at: new Date(comment.created_at),
     body: comment.body,
+    comment_id: comment.comment_id,
   }));
   return commentTest;
 };

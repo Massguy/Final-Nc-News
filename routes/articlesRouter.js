@@ -4,13 +4,23 @@ const {
   fetchArticleById, updateById,
   deleteById, getCommentById, sendComments,
 } = require('../controllers/articleController');
+const { handle405 } = require('../errorHandler');
 
-articlesRouter.route('/').get(fetchArticles);
-articlesRouter.route('/').post(sendingArticles);
-articlesRouter.route('/:article_id').get(fetchArticleById);
-articlesRouter.route('/:article_id').patch(updateById);
-articlesRouter.route('/:article_id').delete(deleteById);
-articlesRouter.route('/:article_id/comments').get(getCommentById);
-articlesRouter.route('/:article_id/comments').post(sendComments);
+articlesRouter.route('/')
+  .get(fetchArticles)
+  .post(sendingArticles)
+  .all(handle405);
+
+
+articlesRouter.route('/:article_id')
+  .get(fetchArticleById)
+  .patch(updateById)
+  .delete(deleteById)
+  .all(handle405);
+
+articlesRouter.route('/:article_id/comments')
+  .get(getCommentById)
+  .post(sendComments)
+  .all(handle405);
 
 module.exports = articlesRouter;

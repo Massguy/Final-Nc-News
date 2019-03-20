@@ -11,5 +11,6 @@ exports.sendingTopics = (req, res, next) => {
   const newTopic = req.body;
   sendTopics(newTopic).then(([topic]) => {
     res.status(201).send({ topic });
-  });
+  })
+    .catch(next);
 };

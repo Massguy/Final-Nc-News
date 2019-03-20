@@ -11,7 +11,8 @@ exports.sendUser = (req, res, next) => {
   const newUser = req.body;
   sendingUser(newUser).then(([users]) => {
     res.status(201).send({ users });
-  });
+  })
+    .catch(next);
 };
 
 exports.getByUsername = (req, res, next) => {
@@ -19,7 +20,7 @@ exports.getByUsername = (req, res, next) => {
   // eslint-disable-next-line consistent-return
   gatherUser(username).then(([user]) => {
     if (user) res.send({ user });
-    else return Promise.reject({ status: 404, msg: 'server error' });
+    else res.status(404).send({ status: 404, msg: 'Sorry, User Not Found' });
   })
-    .catch(err => next(err));
+    .catch(next);
 };

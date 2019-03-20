@@ -1,13 +1,14 @@
 const {
   getArticles, sendArticles,
   getArticleById, updateVote,
-  removeArticle, getComment,
-  sendCom,
+  removeArticle, checkArticleID,
+  fetchCommentsByArticleID,
+  sendCom, countComments, getArticleCount,
 } = require('../model/articleModel');
 
 exports.fetchArticles = (req, res, next) => {
   const {
-    author, topic, sort_by, order,
+    author, topic, sort_by, order, limit, p,
   } = req.query;
   // eslint-disable-next-line no-nested-ternary
   const whereConditions = author
@@ -15,8 +16,7 @@ exports.fetchArticles = (req, res, next) => {
     : topic
       ? { 'article.topic': topic }
       : {};
-  Promise.all([
-    getArticles(whereConditions, sort_by, order),
+  Promise.all([getArticleCount(), getArticles(limit, sort_by, p, order, whereConditions),
   ])
     .then(([articles]) => {
       res.status(200).send({ articles });
@@ -25,61 +25,63 @@ exports.fetchArticles = (req, res, next) => {
 };
 
 exports.sendingArticles = (req, res, next) => {
-  const newArticle = req.body;
-  const formattedArticle = {
-    title: newArticle.title,
-    body: newArticle.body,
-    topic: newArticle.topic,
-    author: newArticle.username,
-  };
-  sendArticles(formattedArticle).then(([article]) => {
-    res.status(201).send({ article });
-  })
-    .catch(err => next(err));
+  const article = req.body;
+  sendArticles(article)
+    .then(([newArticle]) => {
+      res.status(201).send({ article: newArticle });
+    })
+    .catch(next);
 };
 
 exports.fetchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   // eslint-disable-next-line consistent-return
   getArticleById(article_id).then(([article]) => {
-    if (article) res.send({ article });
-    else return Promise.reject({ status: 404, msg: 'server error' });
+    if (!article) return Promise.reject({ code: '22001' });
+    return res.status(200).send({ article });
   })
-    .catch(err => next(err));
+    .catch(next);
 };
 
 exports.updateById = (req, res, next) => {
   const { article_id } = req.params;
-  const { inc_votes } = req.body;
-  // eslint-disable-next-line consistent-return
-  updateVote(article_id, inc_votes).then(([article]) => {
-    if (article) res.status(202).send({ article });
-    else return Promise.reject({ status: 404, msg: 'server error' });
-  })
-    .catch(err => next(err));
+  let { inc_votes = 0 } = req.body;
+  if (typeof inc_votes !== 'number') inc_votes = 0;
+  updateVote(article_id, inc_votes)
+    .then(([article]) => {
+      res.status(200).send({ article });
+    })
+    .catch(next);
 };
 
 exports.deleteById = (req, res, next) => {
   const { article_id } = req.params;
   // eslint-disable-next-line consistent-return
-  removeArticle(article_id).then((itemsRemoved) => {
-    if (itemsRemoved) res.sendStatus(204);
-    else return Promise.reject({ status: 404, msg: 'server error' });
-  })
-    .catch(err => next(err));
+  removeArticle(article_id)
+    .then((itemsRemoved) => {
+      if (itemsRemoved === 1) res.sendStatus(204);
+      else res.status(404).send({ status: 404, msg: 'Sorry, article not found...' });
+    })
+    .catch(next);
 };
 
 exports.getCommentById = (req, res, next) => {
-  const { sort_by, order } = req.query;
   const { article_id } = req.params;
-  // eslint-disable-next-line consistent-return
-  Promise.all([getComment(article_id, sort_by, order)])
-    // eslint-disable-next-line consistent-return
-    .then(([comments]) => {
-      if (comments) res.send({ comments });
-      else return Promise.reject({ status: 404, msg: 'server error' });
+  const {
+    sort_by = 'created_at',
+    order = 'desc',
+    limit = 10,
+    p = 1,
+  } = req.query;
+  const checkArticle = checkArticleID(article_id);
+  const commentsPromise = fetchCommentsByArticleID(article_id, sort_by, order, limit, p);
+  const commentsCount = countComments();
+  return Promise.all([checkArticle, commentsPromise, commentsCount])
+    .then(([check, comments, total_comments]) => {
+      if (check.length === 0) return Promise.reject({ code: '22001' });
+      return res.status(200).send({ comments, total_comments });
     })
-    .catch(err => next(err));
+    .catch(next);
 };
 exports.sendComments = (req, res, next) => {
   const newComment = req.body;
@@ -90,5 +92,6 @@ exports.sendComments = (req, res, next) => {
   };
   sendCom(formattedComment).then(([comment]) => {
     res.status(201).send({ comment });
-  });
+  })
+    .catch(err => next(err));
 };

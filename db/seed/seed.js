@@ -4,7 +4,7 @@ const {
 
 const { formattingArticleDateTimeStamp, formattingComments, createRef } = require('../utils');
 
-exports.seed = function (knex, Promise) {
+exports.seed = function (knex) {
   return knex.migrate
     .rollback()
     .then(() => knex.migrate.latest())

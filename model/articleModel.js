@@ -1,6 +1,6 @@
 const connection = require('../db/connection');
 
-exports.getArticles = (limit = 10, whereConditions, sort_by = 'created_at', order = 'desc', p) => connection
+exports.getArticles = (limit = 10, sort_by = 'created_at', p, order = 'desc', whereConditions) => connection
   .select(
     'article.article_id',
     'article.created_at',

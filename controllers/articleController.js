@@ -16,10 +16,11 @@ exports.fetchArticles = (req, res, next) => {
     : topic
       ? { 'article.topic': topic }
       : {};
-  Promise.all([getArticleCount(), getArticles(limit, sort_by, p, order, whereConditions),
+  Promise.all([getArticles(limit, sort_by, p, order, whereConditions),
+    getArticleCount(whereConditions),
   ])
-    .then(([articles]) => {
-      res.status(200).send({ articles });
+    .then(([articles, articleCount]) => {
+      res.status(200).send({ articles, articleCount });
     })
     .catch(err => next(err));
 };

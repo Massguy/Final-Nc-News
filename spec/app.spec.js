@@ -66,47 +66,31 @@ describe('/', () => {
       });
     });
     describe('/articles', () => {
-      it('GET STATUS:200responds with an array of article objects with author,username,title,body,article_id,topic,created_at,votes,comment_count properties', () => request
-        .get('/api/articles/11')
-        .expect(200)
-        .then((res) => {
-          expect(res.body.article).to.be.an('object');
-          expect(res.body.article).to.eql({
-            article_id: 11,
-            title: 'Am I a cat?',
-            body:
-              'Having run out of ideas for articles, I am staring at the wall blankly, like a cat. Does this make me a cat?',
-            votes: 0,
-            topic: 'mitch',
-            author: 'icellusedkars',
-            created_at: '1978-11-25T12:21:54.171Z',
-          });
-        }));
       it('GET STATUS :200 responds with an array of articles limited to 10 (DEFAULT)', () => request
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
-          expect(body.article).to.be.an('object');
-          expect(body.article).to.have.length(10);
+          expect(body.articles).to.be.an('array');
+          expect(body.articles).to.have.length(10);
         }));
       it('GET STATUS :200 responds with an array of articles limited to 5, (QUERY)', () => request
         .get('/api/articles?limit=5')
         .expect(200)
         .then((res) => {
-          expect(res.body.article).to.be.an('object');
-          expect(res.body.article).to.have.length(5);
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles).to.have.length(5);
         }));
       it('GET STATUS :200 responds with an array of articles sorted by title (DEFAULT_CASE)', () => request
         .get('/api/articles')
         .expect(200)
         .then((res) => {
-          expect(res.body.article[0].topic).to.equal('mitch');
+          expect(res.body.articles[0].topic).to.equal('mitch');
         }));
       it('GET STATUS :200 responds with an array of articles sorted by date (created_at) (QUERY)', () => request
         .get('/api/articles?sort_by=created_at')
         .expect(200)
         .then((res) => {
-          expect(res.body.article[0].created_at).to.equal(
+          expect(res.body.articles[0].created_at).to.equal(
             '2018-11-15T12:21:54.171Z',
           );
         }));
@@ -114,7 +98,7 @@ describe('/', () => {
         .get('/api/articles')
         .expect(200)
         .then((res) => {
-          expect(res.body.article[0].title).to.equal(
+          expect(res.body.articles[0].title).to.equal(
             'Living in the shadow of a great man',
           );
         }));
@@ -122,28 +106,28 @@ describe('/', () => {
         .get('/api/articles?order=asc')
         .expect(200)
         .then((res) => {
-          expect(res.body.article[0].title).to.equal('Moustache');
+          expect(res.body.articles[0].title).to.equal('Moustache');
         }));
       it('GET STATUS :200 responds with an array of articles by author', () => request
         .get('/api/articles?author=icellusedkars')
         .expect(200)
         .then((res) => {
-          expect(res.body.article).to.be.an('array');
-          expect(res.body.article[0].topic).to.equal('mitch');
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles[0].topic).to.equal('mitch');
         }));
       it('GET STATUS :200 responds with an array of articles by topic', () => request
         .get('/api/articles?topic=cats')
         .expect(200)
         .then((res) => {
-          expect(res.body.article).to.be.an('array');
-          expect(res.body.article[0].author).to.equal('rogersop');
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles[0].author).to.equal('rogersop');
         }));
       it('GET STATUS :200 responds with an array of articles on page 2 (QUERY = 2)', () => request
         .get('/api/articles?p=2')
         .expect(200)
         .then((res) => {
-          expect(res.body.article).to.be.an('array');
-          expect(res.body.article[0].author).to.equal('icellusedkars');
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles[0].author).to.equal('icellusedkars');
         }));
       it('POST STATUS:201 returns inserted obj with title, body, topic, author', () => {
         const article = {
@@ -163,14 +147,21 @@ describe('/', () => {
           });
       });
       describe('/:article_id', () => {
-        it('GET STATUS:200 returns article by article_id', () => request
-          .get('/api/articles/1')
+        it('GET STATUS:200responds with an array of article objects with author,username,title,body,article_id,topic,created_at,votes,comment_count properties', () => request
+          .get('/api/articles/11')
           .expect(200)
           .then((res) => {
-            expect(res.body.article.article_id).to.equal(1);
-            expect(res.body.article).to.have.keys(
-              'article_id', 'body', 'author', 'created_at', 'votes', 'topic', 'comment_count', 'title',
-            );
+            expect(res.body.article).to.be.an('object');
+            expect(res.body.article).to.eql({
+              article_id: 11,
+              title: 'Am I a cat?',
+              body:
+                'Having run out of ideas for articles, I am staring at the wall blankly, like a cat. Does this make me a cat?',
+              votes: 0,
+              topic: 'mitch',
+              author: 'icellusedkars',
+              created_at: '1978-11-25T12:21:54.171Z',
+            });
           }));
         it('ERR STATUS:404 if article id doesnt exist', () => request
           .get('/api/articles/100')
@@ -281,15 +272,13 @@ describe('/', () => {
                 'votes',
               );
             }));
-          it('ERR STATUS:400 if not given correct fields', () => {
-            return request
-              .post('/api/articles/1/comments')
-              .send({ author: 'rogersop' })
-              .expect(400)
-              .then((res) => {
-                expect(res.body.msg).to.equal('Please fill all required fields with correct data');
-              });
-          });
+          it('ERR STATUS:400 if not given correct fields', () => request
+            .post('/api/articles/1/comments')
+            .send({ author: 'rogersop' })
+            .expect(400)
+            .then((res) => {
+              expect(res.body.msg).to.equal('Please fill all required fields with correct data');
+            }));
         });
       });
     });
@@ -316,15 +305,13 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.comment.votes).to.equal(16);
         }));
-      it('ERR STATUS:404 if comment id doesnt exist', () => {
-        return request
-          .patch('/api/comments/232')
-          .send({ inc_votes: 1 })
-          .expect(404)
-          .then((res) => {
-            expect(res.body.msg).to.equal('Route not found');
-          });
-      });
+      it('ERR STATUS:404 if comment id doesnt exist', () => request
+        .patch('/api/comments/232')
+        .send({ inc_votes: 1 })
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).to.equal('Route not found');
+        }));
       it('ERR STATUS:400 if comment is invalid', () => {
         const input = ({ inc_votes: 1 });
         return request

@@ -20,7 +20,7 @@ exports.removeComment = (req, res, next) => {
   // eslint-disable-next-line consistent-return
   deleteComment(comment_id).then((itemsRemoved) => {
     if (itemsRemoved) res.sendStatus(204);
-    else return Promise.reject({ status: 404, msg: 'Route not found' });
+    else return res.status(404).send({ status: 404, msg: 'Route not found' });
   })
     .catch(next);
 };

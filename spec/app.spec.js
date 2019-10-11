@@ -122,6 +122,24 @@ describe('/', () => {
           expect(res.body.articles).to.be.an('array');
           expect(res.body.articles[0].author).to.equal('rogersop');
         }));
+      it('GET STATUS :200 responds with an array of articles by topic and author', () => request
+        .get('/api/articles?topic=mitch&author=icellusedkars')
+        .expect(200)
+        .then((res) => {
+          console.log(res.body.articles);
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles[0].author).to.equal('icellusedkars');
+          expect(res.body.articles[0].topic).to.equal('mitch');
+        }));
+      it('GET STATUS :200 responds with an array of articles by topic and author', () => request
+        .get('/api/articles?topic=cats&author=rogersop')
+        .expect(200)
+        .then((res) => {
+          console.log(res.body.articles);
+          expect(res.body.articles).to.be.an('array');
+          expect(res.body.articles[0].author).to.equal('rogersop');
+          expect(res.body.articles[0].topic).to.equal('cats');
+        }));
       it('GET STATUS :200 responds with an array of articles on page 2 (QUERY = 2)', () => request
         .get('/api/articles?p=2')
         .expect(200)

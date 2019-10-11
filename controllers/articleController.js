@@ -11,11 +11,12 @@ exports.fetchArticles = (req, res, next) => {
     author, topic, sort_by, order, limit, p,
   } = req.query;
   // eslint-disable-next-line no-nested-ternary
-  const whereConditions = author
-    ? { 'article.author': author }
+  const whereConditions = author && topic
+    ? { 'article.author': author, 'article.topic': topic }
+    // eslint-disable-next-line no-nested-ternary
     : topic
       ? { 'article.topic': topic }
-      : {};
+      : author ? { 'article.author': author } : {};
   Promise.all([getArticles(limit, sort_by, p, order, whereConditions),
     getArticleCount(whereConditions),
   ])

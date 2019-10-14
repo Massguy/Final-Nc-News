@@ -18,7 +18,7 @@ exports.fetchArticles = (req, res, next) => {
       ? { 'article.topic': topic }
       : author ? { 'article.author': author } : {};
   Promise.all([getArticles(limit, sort_by, p, order, whereConditions),
-  getArticleCount(whereConditions),
+    getArticleCount(whereConditions),
   ])
     .then(([articles, articleCount]) => {
       res.status(200).send({ articles, articleCount });
@@ -87,11 +87,10 @@ exports.getCommentById = (req, res, next) => {
 };
 exports.sendComments = (req, res, next) => {
   const newComment = req.body;
-  const { article_id } = this.params;
   const formattedComment = {
     author: newComment.username,
     body: newComment.body,
-    article_id,
+    article_id: newComment.article_id,
   };
   sendCom(formattedComment).then(([comment]) => {
     res.status(201).send({ comment });

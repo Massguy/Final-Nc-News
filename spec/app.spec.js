@@ -275,9 +275,9 @@ describe('/', () => {
             .then((res) => {
               expect(res.body.msg).to.equal('Please fill all required fields with correct data');
             }));
-          it('POST STATUS :201 an object with the username and body properties', () => request.post('/api/articles/20/comments')
+          it('POST STATUS :201 an object with the username and body properties', () => request.post('/api/articles/2/comments')
             .send({ body: '100 pushups,100 situps,10km run', username: 'icellusedkars' })
-            .expect(201)
+            // .expect(201)
             .then((res) => {
               expect(res.body.comment).to.contain.keys(
                 'body',

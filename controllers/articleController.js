@@ -87,10 +87,11 @@ exports.getCommentById = (req, res, next) => {
 };
 exports.sendComments = (req, res, next) => {
   const newComment = req.body;
+  const { article_id } = req.params;
   const formattedComment = {
     author: newComment.username,
     body: newComment.body,
-    article_id: newComment.article_id,
+    article_id,
   };
   sendCom(formattedComment).then(([comment]) => {
     res.status(201).send({ comment });

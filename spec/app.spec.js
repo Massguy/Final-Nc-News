@@ -126,7 +126,6 @@ describe('/', () => {
         .get('/api/articles?topic=mitch&author=icellusedkars')
         .expect(200)
         .then((res) => {
-          console.log(res.body.articles);
           expect(res.body.articles).to.be.an('array');
           expect(res.body.articles[0].author).to.equal('icellusedkars');
           expect(res.body.articles[0].topic).to.equal('mitch');
@@ -135,7 +134,6 @@ describe('/', () => {
         .get('/api/articles?topic=cats&author=rogersop')
         .expect(200)
         .then((res) => {
-          console.log(res.body.articles);
           expect(res.body.articles).to.be.an('array');
           expect(res.body.articles[0].author).to.equal('rogersop');
           expect(res.body.articles[0].topic).to.equal('cats');

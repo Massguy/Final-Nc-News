@@ -1,12 +1,7 @@
 
-const { json } = require('../model/apiModel');
+const { endpoints } = require('../endApi.json');
+
 
 exports.apiInfo = (req, res, next) => {
-  json((err, data) => {
-    if (err) {
-      next({ msg: 'Not Found' });
-    } else {
-      res.status(200).json(JSON.parse(data));
-    }
-  });
+  res.status(200).json({ endpoints });
 };

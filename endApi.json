@@ -1,0 +1,32 @@
+{
+  "Users: /api/users": {
+    "GET": "returns all of the users that are available in an array that have valid keys",
+  },
+  "Users: /api/users/:username": {
+    "GET": " returns all the information in the users table that have the same username primary key as the username"
+  },
+  "TOPICS: /api/topics": {
+    "GET": "returns all of the topics that are available in an array that have valid keys from the topics table"
+  },
+  "Articles: /api/articles": {
+    "GET": "returns all of the articles that are available in an array that have valid keys from the article table"
+  },
+  "Articles: /api/articles?": {
+    "author": "takes the query of authors and only serves up article that are written by that author, e.g. /api/articles?author=butter_bridge",
+    "topic": "take the query of topic and only serves up article that have that topic, e.g. /api/articles?topic=cats",
+    "sort_by": "takes the query of sort_by this defaults to created_at by can be changed to be sorted by any column e.g. /api/articles?sort_by=votes",
+    "order": "takes a query of order which is defaulted to descending by can be queried to ascending, e.g. /api/articles?order=desc",
+    "chaining": "query's can be chained together using && between them, e.g. /api/articles?sort_by=title&&order=asc"
+  },
+  "Articles: /api/articles/:article_id": {
+    "GET": "return the article that has the article_id as a parameter in the endpoint",
+    "PATCH": "updates the votes and allows them to be either incremented or decremented"
+  },
+  "Articles: /api/articles/:article_id/comments": {
+    "GET": "return all the comments that have the article_id",
+    "POST": "adds a new comments to an article returning the comment that was added"
+  },
+  "Comments: /api/comments/:comment_id": {
+    "PATCH": "updates the votes and allows them to be either incremented or decremented "
+  }
+}

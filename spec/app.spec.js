@@ -36,6 +36,12 @@ describe('/', () => {
         .then((res) => {
           expect(res.body.msg).to.equal('Route not found');
         }));
+      it('ERR STATUS:404 if incorrect path used', () => request
+        .get('/api/topics/tech')
+        .expect(404)
+        .then((res) => {
+          expect(res.body.msg).to.equal('Route not found');
+        }));
       it('POST STATUS:201 accepts an object containing slug and description properties', () => request.post('/api/topics')
         .send({ description: '100 pushups,100 situps,10km run', slug: 'saitama' })
         .expect(201)

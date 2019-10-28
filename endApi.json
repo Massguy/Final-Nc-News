@@ -1,6 +1,6 @@
 {
   "Users: /api/users": {
-    "GET": "returns all of the users that are available in an array that have valid keys",
+    "GET": "returns all of the users that are available in an array that have valid keys"
   },
   "Users: /api/users/:username": {
     "GET": " returns all the information in the users table that have the same username primary key as the username"

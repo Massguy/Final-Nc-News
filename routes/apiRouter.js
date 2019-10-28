@@ -14,5 +14,6 @@ apiRouter.use('/comments', commentsRouter);
 apiRouter.use('/users', usersRouter);
 
 apiRouter.route('/')
+  .get(articlesRouter)
   .all(handle405);
 module.exports = apiRouter;

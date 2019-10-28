@@ -28,6 +28,7 @@ describe('/', () => {
             'slug',
             'description',
           );
+          expect(res.body.topics).to.have.lengthOf(2);
         }));
       it('ERR STATUS:404 if incorrect path used', () => request
         .get('/api/topic')

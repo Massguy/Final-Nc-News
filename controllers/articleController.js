@@ -39,8 +39,8 @@ exports.fetchArticleById = (req, res, next) => {
   const { article_id } = req.params;
   // eslint-disable-next-line consistent-return
   getArticleById(article_id).then(([article]) => {
-    if (!article) return Promise.reject({ code: '22001' });
-    return res.status(200).send({ article });
+    if (!article) res.status(404).send({ status: 404, msg: 'Route not found' });
+    else res.status(200).send({ article });
   })
     .catch(next);
 };

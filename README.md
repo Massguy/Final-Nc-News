@@ -336,12 +336,6 @@ GET /api
 
 ***
 
-### Step 3 - Hosting
 
-Make sure your application and your database is hosted using heroku
-
-### Step 4 - Preparing for your review and portfolio
-
-Finally, you should write a README for this project (and remove this one). The README should be broken down like this: https://gist.github.com/PurpleBooth/109311bb0361f32d87a2
 
 It should also include the link where your heroku app is hosted.
